@@ -1,5 +1,6 @@
 import { products } from "../db";
 import repository from "./repository";
+import { Tag as ITag } from "./interfaces";
 
 const list = async () => {
   return await repository.list();
@@ -17,9 +18,20 @@ const getOne = async (id: string) => {
 
   return tag;
 };
+const update = async (id: string, data: ITag) => {
+  const tag = await repository.update(id, data);
+  if (!tag) throw new Error("Product not found");
+  return tag;
+};
+
+const destroy = async (id: string) => {
+  return await repository.delete(id);
+};
 
 export default {
   list,
   store,
+  update,
   getOne,
+  delete: destroy,
 };

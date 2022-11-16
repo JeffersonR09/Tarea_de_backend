@@ -1,27 +1,32 @@
 import { ulid } from "ulid";
-import { Category } from "./models";
-import { Category as ICategory } from "./interfaces";
+import { Categorie } from "./models";
+import { Categorie as ICategorie } from "./interfaces";
 
 const list = async () => {
-  return await Category.find();
+  return await Categorie.find();
 };
 
-const store = async (data: ICategory) => {
+const store = async (data: ICategorie) => {
   const id = ulid();
 
-  const product = new Category({ name: data.name, price: data.price, id });
+  const categorie = new Categorie({ name: data.name, price: data.price, id });
 
-  await product.save();
+  await categorie.save();
 
-  return product;
+  return categorie;
 };
 
 const getOne = async (id: string) => {
-  return await Category.findOne({ id });
+  return await Categorie.findOne({ id });
 };
 
-const destroy = async () => {
-  return {};
+const destroy = async (id: string) => {
+  return await Categorie.findOneAndDelete({ id });
+};
+
+const update = async (id: string, data: ICategorie) => {
+  const oldDate = Categorie.findOne({ id });
+  return await Categorie.findOneAndUpdate(oldDate, data, { new: true });
 };
 
 export default {
@@ -29,4 +34,5 @@ export default {
   store,
   getOne,
   delete: destroy,
+  update,
 };

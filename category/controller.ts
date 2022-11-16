@@ -1,5 +1,6 @@
 import { products } from "../db";
 import repository from "./repository";
+import { Categorie as ICategorie } from "./interfaces";
 
 const list = async () => {
   return await repository.list();
@@ -7,19 +8,30 @@ const list = async () => {
 
 const store = async (data: any) => {
   if (!data.name) throw new Error("Property name is missing");
-  const category = await repository.store(data);
-  return category;
+  const categorie = await repository.store(data);
+  return categorie;
 };
 
 const getOne = async (id: string) => {
-  const category = await repository.getOne(id);
-  if (!category) throw new Error("Products not found");
+  const categorie = await repository.getOne(id);
+  if (!categorie) throw new Error("Product not found");
 
-  return category;
+  return categorie;
+};
+const update = async (id: string, data: ICategorie) => {
+  const categorie = await repository.update(id, data);
+  if (!categorie) throw new Error("Product not found");
+  return categorie;
+};
+
+const destroy = async (id: string) => {
+  return await repository.delete(id);
 };
 
 export default {
   list,
   store,
+  update,
   getOne,
+  delete: destroy,
 };

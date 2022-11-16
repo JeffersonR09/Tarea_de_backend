@@ -8,15 +8,28 @@ router.get(
   "/",
   requireAuth,
   async (req: Request, res: Response, next: NextFunction) => {
-    const categorys = await controller.list();
-    res.json(categorys);
+    const categorias = await controller.list();
+    res.json(categorias);
   }
 );
 
 router.post("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const category = await controller.store(req.body);
-    res.status(201).json(category);
+    const categorie = await controller.store(req.body);
+    res.status(201).json(categorie);
+  } catch (error) {
+    res.json({
+      message: error,
+    });
+  }
+});
+
+router.patch("/:id", requireAuth, async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const data = req.body;
+    const categorie = await controller.update(id, data);
+    res.json(categorie);
   } catch (error) {
     res.json({
       message: error,
@@ -30,8 +43,8 @@ router.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      const category = await controller.getOne(id);
-      res.json(category);
+      const categorie = await controller.getOne(id);
+      res.json(categorie);
     } catch (error: any) {
       res.json({
         message: error.message,
@@ -40,11 +53,10 @@ router.get(
   }
 );
 
-router.delete("/:id", (req: Request, res: Response, next: NextFunction) => {
+router.delete("/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
-
-  // let mycategorys = category.filter(item => item.id !== id);
-  res.json({});
+  await controller.delete(id);
+  res.json({ message: "El producto ha sido eliminado" });
 });
 
 export default router;

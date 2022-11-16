@@ -1,43 +1,44 @@
-import bcryp from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import config from '../config';
-import { AuthException } from './exceptions';
-import { User, UserLogin } from './interfaces';
-import repository from './repository';
-import validations from './validations';
-
+import bcryp from "bcrypt";
+import jwt from "jsonwebtoken";
+import config from "../config";
+import { AuthException } from "./exceptions";
+import { User, UserLogin } from "./interfaces";
+import repository from "./repository";
+import validations from "./validations";
 
 const register = async (data: User) => {
-    validations.validateRegisterInput(data);
-    return await repository.register(data);
-}
+  validations.validateRegisterInput(data);
+  return await repository.register(data);
+};
 
 const login = async (data: UserLogin) => {
-    validations.validateLoginInput(data);
-    const user = await repository.findUserByUserName(data.username);
+  validations.validateLoginInput(data);
+  const user = await repository.findUserByUserName(data.username);
 
-    if (!user) throw new AuthException('Invalid credentials');
+  if (!user) throw new AuthException("Invalid credentials");
 
-    const passwordIsValid = await bcryp.compare(data.password, String(user.password));
+  const passwordIsValid = await bcryp.compare(
+    data.password,
+    String(user.password)
+  );
 
-    if (!passwordIsValid) throw new AuthException('Invalid credentials');
+  if (!passwordIsValid) throw new AuthException("Invalid credentials");
 
-    const token = generateToken(user);
-    await repository.storeUserToken(data.username, token);
+  const token = generateToken(user);
+  await repository.storeUserToken(data.username, token);
 
-    user.token = token;
+  user.token = token;
 
-    return user;
-}
+  return user;
+};
 
 const generateToken = (user: any) => {
-    return jwt.sign({ id: user.id }, config.secret, {
-        expiresIn: 60
-    });
-}
-
+  return jwt.sign({ id: user.id }, config.secret, {
+    expiresIn: 86400,
+  });
+};
 
 export default {
-    register,
-    login
-}
+  register,
+  login,
+};

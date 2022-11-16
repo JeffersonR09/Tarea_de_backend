@@ -20,8 +20,13 @@ const getOne = async (id: string) => {
   return await Tag.findOne({ id });
 };
 
-const destroy = async () => {
-  return {};
+const destroy = async (id: string) => {
+  return await Tag.findOneAndDelete({ id });
+};
+
+const update = async (id: string, data: ITag) => {
+  const oldDate = Tag.findOne({ id });
+  return await Tag.findOneAndUpdate(oldDate, data, { new: true });
 };
 
 export default {
@@ -29,4 +34,5 @@ export default {
   store,
   getOne,
   delete: destroy,
+  update,
 };
